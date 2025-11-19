@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quest for the Citadel of Truth</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f0f13;
+            --panel-glass: rgba(30, 30, 40, 0.95);
+            --accent-gold: #ffd700;
+            --accent-cyan: #00f3ff;
+            --accent-purple: #9d00ff;
+            --text-main: #e0e0e0;
+            --text-dim: #a0a0b0;
+            --danger: #ff4444;
+            --success: #00cc66;
+            --shadow-glow: 0 0 20px rgba(0, 243, 255, 0.15);
+            --font-head: 'Cinzel', serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(157, 0, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 243, 255, 0.1) 0%, transparent 50%);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* --- Layout Containers --- */
+        #game-container {
+            width: 100%;
+            max-width: 900px;
+            height: 95vh;
+            background: var(--panel-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- Header / HUD --- */
+        header {
+            background: rgba(0, 0, 0, 0.6);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 0 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        h1 {
+            font-family: var(--font-head);
+            background: linear-gradient(to right, var(--accent-gold), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .hud-stats {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .stat-block {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .health-track {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pip {
+            width: 14px;
+            height: 22px;
+            background: #333;
+            border-radius: 3px;
+            border: 1px solid #555;
+            transition: 0.3s all;
+        }
+        .pip.active {
+            background: var(--danger);
+            box-shadow: 0 0 10px var(--danger);
+            border-color: #ff8888;
+        }
+
+        /* Ability Button in HUD */
+        .ability-btn {
+            background: rgba(157, 0, 255, 0.2);
+            border: 1px solid var(--accent-purple);
+            color: #e0b0ff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+        .ability-btn:hover:not(:disabled) {
+            background: var(--accent-purple);
+            color: #fff;
+            box-shadow: 0 0 15px var(--accent-purple);
+        }
+        .ability-btn:disabled {
+            filter: grayscale(1);
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* --- Main Content Area --- */
+        #main-stage {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        /* --- Typography & Elements --- */
+        .story-text {
+            font-family: var(--font-head);
+            font-size: 1.6rem;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        }
+
+        .sub-text {
+            font-size: 1rem;
+            color: var(--text-dim);
+            margin-bottom: 30px;
+            max-width: 650px;
+            line-height: 1.6;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 14px 28px;
+            font-family: var(--font-head);
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 8px;
+            border-radius: 4px;
+            min-width: 200px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before { left: 100%; }
+
+        .btn:hover {
+            background: rgba(255, 215, 0, 0.15);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* --- Character Cards --- */
+        .card-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .char-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px 15px;
+            border-radius: 12px;
+            width: 230px;
+            cursor: pointer;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            position: relative;
+        }
+
+        .char-card:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 243, 255, 0.05);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.15);
+        }
+
+        .char-icon { font-size: 3rem; margin-bottom: 15px; display: block; filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); }
+        .char-title { font-family: var(--font-head); color: #fff; margin-bottom: 8px; font-size: 1.1rem; }
+        .char-desc { font-size: 0.8rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 10px; }
+        .char-stat { font-size: 0.75rem; color: var(--accent-gold); font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* --- Dice Animation --- */
+        #dice-container {
+            perspective: 1000px;
+            width: 100px;
+            height: 100px;
+            margin: 20px auto;
+            display: none;
+        }
+
+        .die {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s ease-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-family: var(--font-head);
+            font-weight: bold;
+            color: #000;
+            background: radial-gradient(circle at 30% 30%, var(--accent-gold), #b8860b);
+            border-radius: 16px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4), inset 0 0 20px rgba(0,0,0,0.2);
+            border: 2px solid #fff;
+        }
+        
+        .rolling { animation: shake 0.5s infinite; }
+
+        @keyframes shake {
+            0% { transform: rotate(0deg) translate(2px, 2px); }
+            25% { transform: rotate(5deg) translate(-2px, -4px); }
+            50% { transform: rotate(-5deg) translate(-6px, 0px); }
+            75% { transform: rotate(5deg) translate(6px, 4px); }
+            100% { transform: rotate(0deg) translate(2px, -2px); }
+        }
+
+        /* --- Quiz Layout --- */
+        .monster-display {
+            background: linear-gradient(180deg, rgba(20, 20, 30, 0.6) 0%, rgba(40, 20, 20, 0.6) 100%);
+            border: 1px solid #444;
+            padding: 0; /* Removed padding to let header span */
+            border-radius: 12px;
+            margin-bottom: 25px;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .monster-header {
+            background: rgba(0,0,0,0.3);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .monster-name { color: #fff; font-family: var(--font-head); font-size: 1.2rem; text-transform: uppercase; }
+        
+        .question-box {
+            padding: 25px 20px;
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            line-height: 1.5;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .difficulty-badge { 
+            padding: 4px 10px; 
+            border-radius: 12px; 
+            font-size: 0.7rem; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+        }
+        .badge-easy { background: rgba(0, 204, 102, 0.2); color: var(--success); border: 1px solid var(--success); }
+        .badge-hard { background: rgba(255, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 700px;
+        }
+        
+        .option-btn {
+            text-align: left;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+            font-family: var(--font-body);
+            position: relative;
+        }
+
+        .option-btn:hover:not(.disabled) { 
+            background: rgba(255, 255, 255, 0.1); 
+            border-color: var(--accent-cyan);
+            transform: translateX(5px);
+        }
+
+        .option-btn.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: transparent;
+        }
+
+        /* --- Feedback Modal (Overlay) --- */
+        #feedback-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(5px);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .feedback-content { 
+            text-align: center; 
+            padding: 40px; 
+            max-width: 600px; 
+            background: var(--bg-dark);
+            border: 1px solid #333;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            animation: fadeIn 0.3s ease-out;
+        }
+        .feedback-icon { font-size: 3.5rem; margin-bottom: 15px; display: block; }
+        .feedback-title { font-size: 1.8rem; font-family: var(--font-head); margin-bottom: 10px; text-transform: uppercase; }
+        .win-text { color: var(--success); }
+        .lose-text { color: var(--danger); }
+        .explanation-text {
+            color: #fff;
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0 25px 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            border-left: 3px solid var(--accent-gold);
+            text-align: left;
+        }
+
+        @media (max-width: 600px) {
+            #main-stage { padding: 15px; }
+            .story-text { font-size: 1.3rem; }
+            .btn { width: 100%; margin: 10px 0; }
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <header>
+        <h1>Citadel of Truth</h1>
+        <div class="hud-stats" id="hud" style="visibility: hidden;">
+            <button id="ability-btn" class="ability-btn" onclick="useAbility()" disabled>Ability</button>
+            <div class="stat-block">
+                <div id="char-name-display" style="color: var(--accent-cyan); font-size: 0.8rem;">Hero</div>
+                <div class="health-track" id="hp-track">
+                    <!-- Pips injected here -->
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <div style="color: var(--text-dim); font-size: 0.65rem;">DISTANCE</div>
+                <div style="color: var(--accent-gold); font-size: 1rem;"><span id="step-count">0</span> / 7</div>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-stage">
+        <!-- Inject content via JS -->
+    </main>
+
+    <!-- Feedback Overlay -->
+    <div id="feedback-overlay">
+        <div class="feedback-content">
+            <span id="feedback-icon" class="feedback-icon"></span>
+            <h2 id="feedback-title" class="feedback-title">Result</h2>
+            <p id="feedback-msg" class="sub-text" style="margin-bottom: 10px;">Result summary</p>
+            <div id="feedback-explanation" class="explanation-text">Explanation goes here.</div>
+            <button class="btn" id="feedback-btn">Continue</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/* -------------------------------------------------------------------------- */
+/* GAME DATA                                                                  */
+/* -------------------------------------------------------------------------- */
+
+const HEROES = [
+    {
+        id: 'seeker',
+        name: 'The Prompt Seeker',
+        icon: '🔮',
+        desc: 'Specialist in language precision.',
+        ability: 'Clarify',
+        abilityDesc: 'Remove 2 wrong options (Once/Game).',
+        hp: 3
+    },
+    {
+        id: 'guardian',
+        name: 'The Fact Warden',
+        icon: '🛡️',
+        desc: 'Defender against misinformation.',
+        ability: 'Ironclad',
+        abilityDesc: 'Passive: Start with +2 Max Health.',
+        hp: 5
+    },
+    {
+        id: 'artist',
+        name: 'The Style Weaver',
+        icon: '🎨',
+        desc: 'Master of creative remixing.',
+        ability: 'Remix',
+        abilityDesc: 'Reroll a bad dice outcome (Once/Game).',
+        hp: 3
+    }
+];
+
+const QUESTIONS = {
+    easy: [
+        { 
+            q: "What is a 'Prompt' in the world of AI?", 
+            options: ["A notification sound", "The instruction you give the AI", "A computer virus", "The speed of the internet"], 
+            a: 1, 
+            monster: "The Blank Page",
+            explanation: "A prompt is the text input you provide to a Generative AI model to guide its output."
+        },
+        { 
+            q: "When an AI makes up facts but sounds confident, what is that called?", 
+            options: ["Daydreaming", "Hallucination", "Brainstorming", "Lying"], 
+            a: 1, 
+            monster: "The Mirage Phantom",
+            explanation: "In AI terms, a 'hallucination' is when a model generates incorrect or nonsensical information confidently."
+        },
+        { 
+            q: "Which of these is a good way to get better answers from AI?", 
+            options: ["Yell at it in caps", "Be specific and provide context", "Use only one word", "Ask it to hack a bank"], 
+            a: 1, 
+            monster: "The Vague Wisp",
+            explanation: "AI models perform best when given clear instructions, specific constraints, and relevant context."
+        },
+        { 
+            q: "AI learns by reading vast amounts of text. What do we call that text?", 
+            options: ["Training Data", "Homework", "The Internet Archive", "Source Code"], 
+            a: 0, 
+            monster: "The Data Golem",
+            explanation: "Training data is the massive collection of text (books, websites, articles) used to teach the AI patterns in language."
+        },
+        { 
+            q: "Can Generative AI create images?", 
+            options: ["No, text only", "Yes, models like Midjourney can", "Only if you pay it", "Only black and white"], 
+            a: 1, 
+            monster: "The Pixel Sprite",
+            explanation: "Yes! Multimodal models and specific image generators (like DALL-E or Midjourney) create visuals from text prompts."
+        },
+        { 
+            q: "What does 'GenAI' stand for?", 
+            options: ["General Artificial Intelligence", "Generative Artificial Intelligence", "Generic AI", "Genius AI"], 
+            a: 1, 
+            monster: "The Acronym Beast",
+            explanation: "GenAI stands for Generative Artificial Intelligence, referring to AI that can create new content."
+        }
+    ],
+    hard: [
+        { 
+            q: "What is 'Algorithmic Bias'?", 
+            options: ["The AI prefers Apple over Android", "Unfair outcomes based on flawed training data", "The electricity cost of AI", "A virus in the code"], 
+            a: 1, 
+            monster: "The Bias Behemoth",
+            explanation: "Bias occurs when an AI produces prejudiced results because the data it was trained on contained human biases."
+        },
+        { 
+            q: "What is a 'Context Window'?", 
+            options: ["The screen size of your laptop", "The limit of text the AI can consider at once", "A pop-up ad", "The time of day the AI works best"], 
+            a: 1, 
+            monster: "The Memory Devourer",
+            explanation: "The context window is the maximum amount of text (tokens) the model can 'read' and remember in a single conversation."
+        },
+        { 
+            q: "If an AI is 'Multimodal', what can it do?", 
+            options: ["Travel through time", "Process different types of inputs (text, image, audio)", "Run on multiple computers", "Speak multiple languages only"], 
+            a: 1, 
+            monster: "The Shapeshifter",
+            explanation: "Multimodal models can understand and generate across different mediums, such as turning text into images or analyzing audio."
+        },
+        { 
+            q: "Why should you be careful with private data in public AI tools?", 
+            options: ["It might get bored", "It could be used to train future models", "It creates a virus", "It breaks the internet"], 
+            a: 1, 
+            monster: "The Privacy Leech",
+            explanation: "Many public AI tools reserve the right to use your inputs to train their future models, potentially exposing secrets."
+        },
+        { 
+            q: "What is a 'Deepfake'?", 
+            options: ["A very deep ocean trench", "Synthetic media (video/audio) that mimics real people", "A philosophical AI thought", "A bug in the system"], 
+            a: 1, 
+            monster: "The Doppelgänger",
+            explanation: "Deepfakes use AI to replace a person's likeness or voice with someone else's, often indistinguishably."
+        },
+        { 
+            q: "What are 'Guardrails' in AI development?", 
+            options: ["Safety rules preventing harmful output", "Physical fences around servers", "Deleting the internet", "Asking it nicely"], 
+            a: 0, 
+            monster: "The Chaos Engine",
+            explanation: "Guardrails are software restrictions put in place by developers to stop the AI from generating illegal, hateful, or dangerous content."
+        }
+    ]
+};
+
+const PATH_DESCRIPTIONS = [
+    { l: "Enter the Forest of Unclear Context", r: "Climb the Peaks of Specificity" },
+    { l: "Cross the Bridge of Creativity", r: "Wade through the Swamp of Misinformation" },
+    { l: "Descend into the Cavern of Data", r: "Scale the Cliffs of Logic" },
+    { l: "Take the Path of the Artist", r: "Follow the Road of the Analyst" },
+    { l: "Enter the Valley of Hallucinations", r: "Walk the Plains of Grounded Truth" }
+];
+
+/* -------------------------------------------------------------------------- */
+/* GAME STATE                                  */
+/* -------------------------------------------------------------------------- */
+
+let state = {
+    hero: null,
+    currentHp: 0,
+    maxHp: 0,
+    step: 0,
+    maxSteps: 7,
+    pathText: "",
+    currentEnemy: null,
+    abilityUsed: false
+};
+
+/* -------------------------------------------------------------------------- */
+/* DOM ELEMENTS                                */
+/* -------------------------------------------------------------------------- */
+
+const mainStage = document.getElementById('main-stage');
+const hud = document.getElementById('hud');
+const hpTrack = document.getElementById('hp-track');
+const stepCount = document.getElementById('step-count');
+const charNameDisplay = document.getElementById('char-name-display');
+const abilityBtn = document.getElementById('ability-btn');
+const feedbackOverlay = document.getElementById('feedback-overlay');
+const feedbackTitle = document.getElementById('feedback-title');
+const feedbackMsg = document.getElementById('feedback-msg');
+const feedbackExpl = document.getElementById('feedback-explanation');
+const feedbackBtn = document.getElementById('feedback-btn');
+const feedbackIcon = document.getElementById('feedback-icon');
+
+// --- Init ---
+function initGame() {
+    renderHeroSelection();
+}
+
+// --- Render: Hero Selection ---
+function renderHeroSelection() {
+    hud.style.visibility = 'hidden';
+    state.abilityUsed = false;
+    
+    let cardsHtml = HEROES.map(h => `
+        <div class="char-card fade-in" onclick="selectHero('${h.id}')">
+            <span class="char-icon">${h.icon}</span>
+            <div class="char-title">${h.name}</div>
+            <div class="char-desc">${h.desc}</div>
+            <div style="margin: 10px 0; border-top:1px solid #444; padding-top:10px;">
+                <div class="char-stat" style="color:var(--accent-purple)">Ability: ${h.ability}</div>
+                <div style="font-size:0.7rem; color:#888;">${h.abilityDesc}</div>
+            </div>
+            <div class="char-stat" style="color:var(--danger)">HP: ${h.hp}</div>
+        </div>
+    `).join('');
+
+    mainStage.innerHTML = `
+        <div class="story-text fade-in">Who will enter the Citadel?</div>
+        <div class="sub-text fade-in">Choose your guide. Each has unique strengths to help survive the journey.</div>
+        <div class="card-container">
+            ${cardsHtml}
+        </div>
+    `;
+}
+
+function selectHero(id) {
+    const hero = HEROES.find(h => h.id === id);
+    state.hero = hero;
+    state.currentHp = hero.hp;
+    state.maxHp = hero.hp;
+    state.step = 0;
+    
+    // Update HUD
+    charNameDisplay.innerHTML = `${hero.icon} ${hero.name}`;
+    
+    // Setup Ability Button
+    if (hero.ability === 'Ironclad') {
+        abilityBtn.innerText = "Passive: Ironclad";
+        abilityBtn.disabled = true;
+    } else {
+        abilityBtn.innerText = `Use ${hero.ability}`;
+        abilityBtn.disabled = false; 
+        abilityBtn.onclick = useAbility;
+    }
+
+    updateHud();
+    hud.style.visibility = 'visible';
+
+    renderPathSelection();
+}
+
+// --- Logic: Abilities ---
+function useAbility() {
+    if (state.abilityUsed) return;
+
+    if (state.hero.id === 'artist') {
+        // Remix: Triggered during dice roll usually, or we handle it contextually.
+        // For simplicity, let's say the button is only active when it makes sense?
+        // Actually, let's simplify: "Artist" triggers Remix ONLY on the Dice Screen.
+        alert("Wait for a Dice Roll to use Remix!");
+        return; 
+    }
+
+    if (state.hero.id === 'seeker') {
+        // Clarify: Triggered during Combat.
+        const options = document.querySelectorAll('.option-btn');
+        if (options.length === 0) {
+            alert("Wait for a Question to use Clarify!");
+            return;
+        }
+        
+        // Logic to remove 2 wrong answers
+        let removed = 0;
+        const correctIndex = state.currentEnemy.a;
+        
+        // Identify wrong indices
+        let wrongIndices = [];
+        state.currentEnemy.options.forEach((_, i) => {
+            if (i !== correctIndex) wrongIndices.push(i);
+        });
+
+        // Shuffle to pick random 2 to remove
+        wrongIndices.sort(() => Math.random() - 0.5);
+        
+        // Disable first 2
+        wrongIndices.slice(0, 2).forEach(idx => {
+            options[idx].classList.add('disabled');
+            options[idx].innerText = "--- CLARIFIED ---";
+            options[idx].onclick = null;
+        });
+
+        state.abilityUsed = true;
+        abilityBtn.disabled = true;
+        abilityBtn.innerText = "Ability Used";
+    }
+}
+
+// --- Render: Path Selection ---
+function renderPathSelection() {
+    if (state.step >= state.maxSteps) {
+        victory();
+        return;
+    }
+
+    const flavor = PATH_DESCRIPTIONS[Math.floor(Math.random() * PATH_DESCRIPTIONS.length)];
+    
+    // Reset ability button state for Artist (can't use here) or Seeker (can't use here)
+    // Just visual update if needed
+    
+    mainStage.innerHTML = `
+        <div class="story-text fade-in">Step ${state.step + 1}: The Path Forks</div>
+        <div class="sub-text fade-in">Your journey continues. Which direction feels right to you?</div>
+        <div class="fade-in" style="display:flex; flex-direction:column; gap:15px; margin-top:20px;">
+            <button class="btn" onclick="choosePath('${flavor.l}')">⬅ ${flavor.l}</button>
+            <button class="btn" onclick="choosePath('${flavor.r}')">${flavor.r} ➡</button>
+        </div>
+    `;
+}
+
+function choosePath(text) {
+    state.pathText = text;
+    renderDiceRoll();
+}
+
+// --- Render: Dice Roll ---
+function renderDiceRoll() {
+    // Enable Remix button if Artist and not used
+    if (state.hero.id === 'artist' && !state.abilityUsed) {
+        abilityBtn.disabled = false;
+        abilityBtn.onclick = () => {
+            state.abilityUsed = true;
+            abilityBtn.disabled = true;
+            abilityBtn.innerText = "Remixed!";
+            // Reroll animation trigger
+            const die = document.getElementById('die-face');
+            die.classList.add('rolling');
+            setTimeout(() => {
+                die.classList.remove('rolling');
+                const roll = Math.floor(Math.random() * 20) + 1; 
+                die.innerText = roll;
+                handleRollResult(roll);
+            }, 500);
+        };
+    } else if (state.hero.id !== 'seeker') {
+        // Disable for others or if used
+         if(state.hero.id === 'artist') abilityBtn.disabled = true;
+    }
+
+    mainStage.innerHTML = `
+        <div class="story-text fade-in">Fate is Rolling...</div>
+        <div class="sub-text fade-in">
+            You chose to ${state.pathText}.<br>
+            ${state.hero.id === 'artist' && !state.abilityUsed ? '<span style="color:var(--accent-purple)">You can use REMIX to reroll!</span>' : ''}
+        </div>
+        <div id="dice-container" style="display:block" class="fade-in">
+            <div id="die-face" class="die">?</div>
+        </div>
+        <div id="roll-result" class="fade-in" style="height: 30px; margin-top:20px; font-weight:bold; font-size:1.2rem; color:var(--accent-gold)"></div>
+    `;
+
+    const die = document.getElementById('die-face');
+    
+    die.classList.add('rolling');
+    
+    // Simulate Roll
+    setTimeout(() => {
+        die.classList.remove('rolling');
+        const roll = Math.floor(Math.random() * 20) + 1;
+        die.innerText = roll;
+        handleRollResult(roll);
+    }, 1500);
+}
+
+function handleRollResult(roll) {
+    const resultText = document.getElementById('roll-result');
+    // Disable Remix button now that roll is done (unless we want to allow post-roll? Let's say pre-roll or mid-roll for simplicity in code structure, but actually standard UI pattern is see result -> click reroll.
+    // Implementation detail: The current flow moves fast. Let's stick to the flow.
+    
+    let type = '';
+    if (roll > 10) {
+        type = 'easy';
+        resultText.innerHTML = `Rolled ${roll}! The path is clear.`;
+        resultText.style.color = 'var(--success)';
+    } else {
+        type = 'hard';
+        resultText.innerHTML = `Rolled ${roll}. A CHALLENGE blocks the way!`;
+        resultText.style.color = 'var(--danger)';
+    }
+
+    // Short delay before combat
+    setTimeout(() => {
+        startCombat(type);
+    }, 2000);
+}
+
+// --- Render: Combat (Quiz) ---
+function startCombat(difficulty) {
+    // Enable Clarify for Seeker
+    if (state.hero.id === 'seeker' && !state.abilityUsed) {
+        abilityBtn.disabled = false;
+        abilityBtn.onclick = useAbility;
+    } else if (state.hero.id === 'artist') {
+        abilityBtn.disabled = true; // Can't remix in combat
+    }
+
+    const pool = QUESTIONS[difficulty];
+    const q = pool[Math.floor(Math.random() * pool.length)];
+    state.currentEnemy = q;
+
+    const badgeClass = difficulty === 'easy' ? 'badge-easy' : 'badge-hard';
+    const containerClass = difficulty === 'hard' ? 'boss-mode' : '';
+
+    mainStage.innerHTML = `
+        <div class="monster-display ${containerClass} fade-in">
+            <div class="monster-header">
+                <div class="monster-name">${q.monster}</div>
+                <span class="difficulty-badge ${badgeClass}">${difficulty} Question</span>
+            </div>
+            <div class="question-box">
+                <div class="question-text">${q.q}</div>
+            </div>
+        </div>
+        
+        <div class="quiz-options fade-in">
+            ${q.options.map((opt, i) => `
+                <button class="option-btn" onclick="handleAnswer(${i})">${opt}</button>
+            `).join('')}
+        </div>
+        ${state.hero.id === 'seeker' && !state.abilityUsed ? '<div style="margin-top:10px; color:var(--accent-purple); font-size:0.8rem;">Use "Clarify" to remove wrong answers.</div>' : ''}
+    `;
+}
+
+function handleAnswer(index) {
+    const q = state.currentEnemy;
+    const isCorrect = index === q.a;
+
+    if (isCorrect) {
+        showFeedback(true, `Correct! The ${q.monster} fades away.`, q.explanation);
+    } else {
+        state.currentHp--;
+        updateHud();
+        const damageText = state.currentHp <= 0 ? "You have lost your way." : "You take 1 Damage.";
+        const correctText = q.options[q.a];
+        showFeedback(false, `Incorrect. ${damageText} <br><br>The correct answer was: <b>${correctText}</b>`, q.explanation);
+    }
+}
+
+// --- HUD & Feedback ---
+function updateHud() {
+    // Render Pips
+    let pipsHtml = '';
+    for(let i=0; i<state.maxHp; i++) {
+        const isActive = i < state.currentHp ? 'active' : '';
+        pipsHtml += `<div class="pip ${isActive}"></div>`;
+    }
+    hpTrack.innerHTML = pipsHtml;
+    stepCount.innerText = state.step;
+}
+
+function showFeedback(success, text, explanation) {
+    feedbackOverlay.style.display = 'flex';
+    feedbackTitle.innerText = success ? "Success!" : "Damage Taken!";
+    feedbackTitle.className = success ? "feedback-title win-text" : "feedback-title lose-text";
+    feedbackIcon.innerText = success ? "✨" : "💥";
+    feedbackMsg.innerHTML = text;
+    feedbackExpl.innerHTML = `<strong>Insight:</strong> ${explanation}`;
+
+    feedbackBtn.onclick = () => {
+        feedbackOverlay.style.display = 'none';
+        if (state.currentHp <= 0) {
+            gameOver();
+        } else if (success) {
+            state.step++;
+            updateHud();
+            renderPathSelection();
+        } else {
+            // On fail but alive, advance anyway (fail forward mechanic)
+            state.step++;
+            updateHud();
+            renderPathSelection();
+        }
+    };
+}
+
+// --- End States ---
+function victory() {
+    mainStage.innerHTML = `
+        <div style="font-size:5rem; margin-bottom:20px;" class="fade-in">🏰</div>
+        <div class="story-text fade-in" style="color:var(--accent-gold)">The Citadel of Truth</div>
+        <div class="sub-text fade-in">
+            You have navigated the noise and reached the summit of understanding.
+            <br><br>
+            <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:8px;">
+                <div style="font-size:1.2rem; margin-bottom:10px;">${state.hero.name}</div>
+                <div>Health Remaining: ${state.currentHp} / ${state.maxHp}</div>
+            </div>
+        </div>
+        <button class="btn fade-in" onclick="initGame()">Start New Quest</button>
+    `;
+}
+
+function gameOver() {
+    mainStage.innerHTML = `
+        <div style="font-size:5rem; margin-bottom:20px;" class="fade-in">☠️</div>
+        <div class="story-text fade-in" style="color:var(--danger)">Lost in the Noise</div>
+        <div class="sub-text fade-in">Your journey ends here. The hallucinations were too strong.</div>
+        <button class="btn fade-in" onclick="initGame()">Try Again</button>
+    `;
+}
+
+// --- Start ---
+initGame();
+
+</script>
+</body>
+</html>
