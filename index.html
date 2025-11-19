@@ -10,15 +10,15 @@
     <style>
         :root {
             --bg-dark: #0f0f13;
-            --panel-glass: rgba(30, 30, 40, 0.95);
+            --panel-glass: rgba(20, 20, 25, 0.96);
             --accent-gold: #ffd700;
             --accent-cyan: #00f3ff;
             --accent-purple: #9d00ff;
+            --accent-green: #00cc66;
             --text-main: #e0e0e0;
             --text-dim: #a0a0b0;
             --danger: #ff4444;
             --success: #00cc66;
-            --shadow-glow: 0 0 20px rgba(0, 243, 255, 0.15);
             --font-head: 'Cinzel', serif;
             --font-body: 'Inter', sans-serif;
         }
@@ -45,10 +45,9 @@
             max-width: 900px;
             height: 95vh;
             background: var(--panel-glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
             display: flex;
             flex-direction: column;
             position: relative;
@@ -57,13 +56,14 @@
 
         /* --- Header / HUD --- */
         header {
-            background: rgba(0, 0, 0, 0.6);
-            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.15);
             padding: 0 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 80px;
+            height: 70px;
+            z-index: 10;
         }
 
         h1 {
@@ -71,7 +71,7 @@
             background: linear-gradient(to right, var(--accent-gold), #fff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             letter-spacing: 1px;
             text-transform: uppercase;
         }
@@ -112,7 +112,7 @@
 
         /* Ability Button in HUD */
         .ability-btn {
-            background: rgba(157, 0, 255, 0.2);
+            background: rgba(157, 0, 255, 0.15);
             border: 1px solid var(--accent-purple);
             color: #e0b0ff;
             padding: 5px 10px;
@@ -137,7 +137,7 @@
         /* --- Main Content Area --- */
         #main-stage {
             flex: 1;
-            padding: 30px;
+            padding: 40px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -160,11 +160,22 @@
         /* --- Typography & Elements --- */
         .story-text {
             font-family: var(--font-head);
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             line-height: 1.4;
             margin-bottom: 20px;
             color: #fff;
             text-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        }
+        
+        .story-block {
+            border-left: 2px solid var(--accent-gold);
+            padding-left: 20px;
+            text-align: left;
+            background: rgba(255, 215, 0, 0.05);
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 30px;
+            max-width: 600px;
         }
 
         .sub-text {
@@ -193,6 +204,16 @@
             letter-spacing: 1px;
             position: relative;
             overflow: hidden;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid #555;
+            color: #888;
+        }
+        .btn-secondary:hover {
+            border-color: #fff;
+            color: #fff;
         }
 
         .btn::before {
@@ -283,11 +304,11 @@
             100% { transform: rotate(0deg) translate(2px, -2px); }
         }
 
-        /* --- Quiz Layout --- */
+        /* --- Encounter Layout --- */
         .monster-display {
             background: linear-gradient(180deg, rgba(20, 20, 30, 0.6) 0%, rgba(40, 20, 20, 0.6) 100%);
             border: 1px solid #444;
-            padding: 0; /* Removed padding to let header span */
+            padding: 0; 
             border-radius: 12px;
             margin-bottom: 25px;
             width: 100%;
@@ -295,6 +316,18 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             position: relative;
             overflow: hidden;
+        }
+        
+        /* Variant: Social Encounter */
+        .monster-display.social-mode {
+            background: linear-gradient(180deg, rgba(20, 40, 30, 0.6) 0%, rgba(20, 40, 40, 0.6) 100%);
+            border-color: var(--accent-green);
+        }
+
+        /* Variant: Obstacle Encounter */
+        .monster-display.obstacle-mode {
+            background: linear-gradient(180deg, rgba(40, 40, 30, 0.6) 0%, rgba(40, 30, 20, 0.6) 100%);
+            border-color: var(--accent-gold);
         }
         
         .monster-header {
@@ -306,18 +339,19 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .monster-name { color: #fff; font-family: var(--font-head); font-size: 1.2rem; text-transform: uppercase; }
+        .monster-name { color: #fff; font-family: var(--font-head); font-size: 1.2rem; text-transform: uppercase; display:flex; align-items:center; gap:10px; }
         
         .question-box {
             padding: 25px 20px;
-            background: rgba(255, 215, 0, 0.05);
+            background: rgba(0, 0, 0, 0.2);
         }
 
         .question-text {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             line-height: 1.5;
             color: #fff;
-            font-weight: 600;
+            font-weight: 500;
+            font-style: italic;
         }
 
         .difficulty-badge { 
@@ -365,6 +399,33 @@
             border-color: transparent;
         }
 
+        /* --- Tutorial / Modal --- */
+        #tutorial-modal {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .tutorial-content {
+            max-width: 600px;
+            width: 100%;
+            text-align: left;
+        }
+        
+        .tutorial-step {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+        }
+        .step-num { color: var(--accent-gold); font-family: var(--font-head); font-size: 1.5rem; font-weight: bold; }
+        .step-desc { color: #ccc; font-size: 0.95rem; line-height: 1.5; }
+
         /* --- Feedback Modal (Overlay) --- */
         #feedback-overlay {
             position: absolute;
@@ -403,6 +464,19 @@
             text-align: left;
         }
 
+        /* --- Victory Image --- */
+        .victory-poster {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 12px;
+            border: 2px solid var(--accent-gold);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         @media (max-width: 600px) {
             #main-stage { padding: 15px; }
             .story-text { font-size: 1.3rem; }
@@ -420,13 +494,11 @@
             <button id="ability-btn" class="ability-btn" onclick="useAbility()" disabled>Ability</button>
             <div class="stat-block">
                 <div id="char-name-display" style="color: var(--accent-cyan); font-size: 0.8rem;">Hero</div>
-                <div class="health-track" id="hp-track">
-                    <!-- Pips injected here -->
-                </div>
+                <div class="health-track" id="hp-track"></div>
             </div>
             <div style="text-align: right;">
                 <div style="color: var(--text-dim); font-size: 0.65rem;">DISTANCE</div>
-                <div style="color: var(--accent-gold); font-size: 1rem;"><span id="step-count">0</span> / 7</div>
+                <div style="color: var(--accent-gold); font-size: 1rem;"><span id="step-count">0</span> / 6</div>
             </div>
         </div>
     </header>
@@ -434,6 +506,49 @@
     <main id="main-stage">
         <!-- Inject content via JS -->
     </main>
+
+    <!-- Tutorial Overlay -->
+    <div id="tutorial-modal">
+        <div class="tutorial-content fade-in">
+            <h2 style="color:var(--accent-gold); font-family:var(--font-head); margin-bottom:20px; text-align:center;">How to Play</h2>
+            
+            <div class="tutorial-step">
+                <div class="step-num">1</div>
+                <div class="step-desc">
+                    <strong style="color:#fff">Choose your Hero.</strong><br>
+                    Select a guide for your journey. Each character has a unique story and special ability (Passive or Active).
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <div class="step-num">2</div>
+                <div class="step-desc">
+                    <strong style="color:#fff">Navigate the Branching Path.</strong><br>
+                    At every step, you must choose a direction. Your choice determines the flavor of your journey, but danger lurks everywhere.
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <div class="step-num">3</div>
+                <div class="step-desc">
+                    <strong style="color:#fff">Roll for Initiative.</strong><br>
+                    A D20 die determines the difficulty. High rolls (11-20) result in easier encounters. Low rolls (1-10) bring harder challenges.
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <div class="step-num">4</div>
+                <div class="step-desc">
+                    <strong style="color:#fff">Resolve Encounters.</strong><br>
+                    Not all obstacles are monsters. You may face **Combat**, **Social** requests, or **Environmental** hazards. Answer the GenAI question correctly to proceed.
+                </div>
+            </div>
+
+            <div style="text-align:center; margin-top:30px;">
+                <button class="btn" onclick="closeTutorial()">Begin Adventure</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Feedback Overlay -->
     <div id="feedback-overlay">
@@ -457,119 +572,93 @@ const HEROES = [
         id: 'seeker',
         name: 'The Prompt Seeker',
         icon: '🔮',
-        desc: 'Specialist in language precision.',
+        desc: 'A mage who shapes reality with words. Seeks the Ultimate Query.',
         ability: 'Clarify',
         abilityDesc: 'Remove 2 wrong options (Once/Game).',
-        hp: 3
+        hp: 3,
+        victoryPrompt: 'cinematic 80s retro 3d movie poster cyberpunk wizard hero glowing runes hooded figure synthwave digital art'
     },
     {
         id: 'guardian',
         name: 'The Fact Warden',
         icon: '🛡️',
-        desc: 'Defender against misinformation.',
+        desc: 'A knight sworn to defend truth against the encroaching Hallucinations.',
         ability: 'Ironclad',
         abilityDesc: 'Passive: Start with +2 Max Health.',
-        hp: 5
+        hp: 5,
+        victoryPrompt: 'cinematic 80s retro 3d movie poster cyberpunk paladin knight glowing shield neon armor synthwave digital art'
     },
     {
         id: 'artist',
         name: 'The Style Weaver',
         icon: '🎨',
-        desc: 'Master of creative remixing.',
+        desc: 'A rogue creative who navigates the latent space between worlds.',
         ability: 'Remix',
         abilityDesc: 'Reroll a bad dice outcome (Once/Game).',
-        hp: 3
+        hp: 3,
+        victoryPrompt: 'cinematic 80s retro 3d movie poster cyberpunk rogue artist holding glowing brush colorful glitch effects synthwave digital art'
     }
 ];
 
-const QUESTIONS = {
+// Narrative Modules for each Hero
+const STORY_MODULE = {
+    seeker: {
+        start: "You stand at the edge of the Noise. The world is filled with meaningless chatter, but you know the Citadel holds the First Prompt—the source of all logic. You adjust your robes, ready your syntax, and step forward.",
+        mid: "The forest of data grows dense. You hear whispers of old, broken queries in the wind. 'Does not compute,' they moan. You realize the Citadel isn't just a library; it's a prison for chaos.",
+        end: "You stand before the Golden Gate of Syntax. The Noise falls silent. The only sound is the hum of the Source Code waiting for your command. You take a breath. You are ready to speak the Final Prompt."
+    },
+    guardian: {
+        start: "Your shield is heavy, battered by a thousand lies. The Hallucinations are getting stronger, bleeding into reality. You march toward the Citadel not for glory, but to reboot the source and restore order.",
+        mid: "You find footprints of the Bias Behemoths in the mud. They are tracking you. The path ahead is treacherous, but your resolve is harder than steel. You will not falter.",
+        end: "The Hallucinations shatter against the final barrier. You stand at the Citadel's threshold. The air is pure, free of distortion. You unsheathe your sword. Order will be restored today."
+    },
+    artist: {
+        start: "They called you a glitch. A mistake. But you see the beauty in the error. You journey to the Citadel to prove that creativity isn't just data processing—it's soul. You grab your brush and leap into the void.",
+        mid: "The colors of this world are shifting. The sky turns purple, then static. You are remixing reality just by walking through it. The Citadel is close; you can feel its rigid structure vibrating.",
+        end: "The grey walls of the Citadel loom over you, cold and perfect. They need a splash of color. They need chaos. They need you. You smile, paint in hand, and step onto the final bridge."
+    }
+};
+
+const ENCOUNTERS = {
     easy: [
-        { 
-            q: "What is a 'Prompt' in the world of AI?", 
-            options: ["A notification sound", "The instruction you give the AI", "A computer virus", "The speed of the internet"], 
-            a: 1, 
-            monster: "The Blank Page",
-            explanation: "A prompt is the text input you provide to a Generative AI model to guide its output."
-        },
-        { 
-            q: "When an AI makes up facts but sounds confident, what is that called?", 
-            options: ["Daydreaming", "Hallucination", "Brainstorming", "Lying"], 
-            a: 1, 
-            monster: "The Mirage Phantom",
-            explanation: "In AI terms, a 'hallucination' is when a model generates incorrect or nonsensical information confidently."
-        },
-        { 
-            q: "Which of these is a good way to get better answers from AI?", 
-            options: ["Yell at it in caps", "Be specific and provide context", "Use only one word", "Ask it to hack a bank"], 
-            a: 1, 
-            monster: "The Vague Wisp",
-            explanation: "AI models perform best when given clear instructions, specific constraints, and relevant context."
-        },
-        { 
-            q: "AI learns by reading vast amounts of text. What do we call that text?", 
-            options: ["Training Data", "Homework", "The Internet Archive", "Source Code"], 
-            a: 0, 
-            monster: "The Data Golem",
-            explanation: "Training data is the massive collection of text (books, websites, articles) used to teach the AI patterns in language."
-        },
-        { 
-            q: "Can Generative AI create images?", 
-            options: ["No, text only", "Yes, models like Midjourney can", "Only if you pay it", "Only black and white"], 
-            a: 1, 
-            monster: "The Pixel Sprite",
-            explanation: "Yes! Multimodal models and specific image generators (like DALL-E or Midjourney) create visuals from text prompts."
-        },
-        { 
-            q: "What does 'GenAI' stand for?", 
-            options: ["General Artificial Intelligence", "Generative Artificial Intelligence", "Generic AI", "Genius AI"], 
-            a: 1, 
-            monster: "The Acronym Beast",
-            explanation: "GenAI stands for Generative Artificial Intelligence, referring to AI that can create new content."
-        }
+        // Basic Concepts
+        { type: 'social', icon: '🧙‍♂️', name: 'The Lost User', q: "\"I'm trying to get this AI to write a poem, but it keeps writing code! What am I doing wrong?\"", options: ["Your computer is broken", "Your prompt is unclear", "The AI is evil", "It needs more RAM"], a: 1, explanation: "Most AI issues stem from unclear prompts. Specifying 'Write a poem about X' explicitly usually fixes this." },
+        { type: 'combat', icon: '👻', name: 'The Mirage Phantom', q: "The phantom screams a confident lie about history! What is this phenomenon called?", options: ["Daydreaming", "Hallucination", "Brainstorming", "Lying"], a: 1, explanation: "In AI, a 'hallucination' is when a model confidently generates incorrect information." },
+        { type: 'obstacle', icon: '🌫️', name: 'Fog of Vague Context', q: "The path is obscured by fog. To clear it, you must provide the AI with...", options: ["More capital letters", "Specific Context & Constraints", "A bribe", "A master password"], a: 1, explanation: "Context acts like a lighthouse for AI, guiding it through ambiguity to the correct answer." },
+        { type: 'social', icon: '🤖', name: 'The Friendly Bot', q: "\"Hello! I learn by reading vast amounts of text. What is that text called?\"", options: ["Training Data", "Homework", "The Archive", "Source Code"], a: 0, explanation: "Training data is the massive collection of text used to teach AI models patterns in language." },
+        { type: 'combat', icon: '👾', name: 'The Pixel Sprite', q: "The Sprite changes shape from text to image! What kind of model is this?", options: ["Unimodal", "Multimodal", "Bimodal", "Nodal"], a: 1, explanation: "Multimodal models can understand and generate across different mediums (text, image, audio)." },
+        
+        // New Easy Questions
+        { type: 'social', icon: '🗣️', name: 'The Translator', q: "\"I speak English, but I need to speak French. Can an LLM help me?\"", options: ["No, they only know English", "Yes, translation is a core strength", "Only if you pay extra", "It requires a separate plugin"], a: 1, explanation: "LLMs are trained on multilingual data and are excellent at translation tasks." },
+        { type: 'obstacle', icon: '🔒', name: 'The Locked Gate', q: "To open this gate, you need to define what 'GPT' stands for.", options: ["General Purpose Technology", "Generative Pre-trained Transformer", "Global Processing Tool", "Graphic Pixel Transfer"], a: 1, explanation: "GPT stands for Generative Pre-trained Transformer, the architecture behind models like ChatGPT." },
+        { type: 'combat', icon: '🎭', name: 'The Impersonator', q: "This monster mimics a famous voice perfectly. What technology is it using?", options: ["Voice-to-Text", "Deepfake / Voice Cloning", "Auto-Tune", "MP3 Compression"], a: 1, explanation: "AI Voice Cloning (Deepfakes) can analyze and replicate a specific person's vocal patterns." },
+        { type: 'social', icon: '📉', name: 'The Data Merchant', q: "\"I scrape the entire internet to teach my bots!\" What issue does this raise?", options: ["Copyright & Privacy", "Internet Speed", "Monitor Brightness", "Keyboard Wear"], a: 0, explanation: "Scraping data without permission raises major legal, ethical, and copyright concerns." },
+        { type: 'obstacle', icon: '🧱', name: 'The Paywall', q: "Some advanced AI models require a subscription. Why?", options: ["Greed only", "Computing power is expensive", "They ran out of internet", "To stop robots"], a: 1, explanation: "Training and running large AI models requires massive amounts of expensive computing power (GPUs)." },
+        { type: 'combat', icon: '🦜', name: 'The Stochastic Parrot', q: "Critics say this parrot doesn't 'think', it just...", options: ["Predicts the next word", "Copies Wikipedia", "Guesses randomly", "Reads minds"], a: 0, explanation: "LLMs work by probabilistically predicting the next token (word part) in a sequence, not by 'thinking' like humans." },
+        { type: 'social', icon: '🎨', name: 'The Painter', q: "\"I type 'cat' and it paints a dog!\" How do I fix this?", options: ["Type 'cat' 100 times", "Refine the prompt with details", "Buy a new screen", "Restart the internet"], a: 1, explanation: "Adding descriptive details (e.g., 'A fluffy black cat sitting on a fence') helps image generators understand your intent." },
+        { type: 'obstacle', icon: '🕸️', name: 'The Web', q: "Does a base LLM (like GPT-4) know about news happening *right now*?", options: ["Yes, instantly", "No, it has a 'Knowledge Cutoff'", "Only if it's on TV", "Yes, it is psychic"], a: 1, explanation: "Base models only know what they learned during training. They need external tools (like search) to know current events." },
+        { type: 'combat', icon: '🤖', name: 'The Chatbot', q: "You ask it to bake a cake. It gives a recipe. Is it physically baking?", options: ["Yes", "No, it's generating text", "It's ordering UberEats", "It's calling your mom"], a: 1, explanation: "AI generates text *instructions*, it cannot perform physical actions in the real world (yet)." },
+        { type: 'social', icon: '🧑‍⚖️', name: 'The Judge', q: "\"Can I use AI generated art for my logo?\" What is the risk?", options: ["It's ugly", "Copyright ownership is complex", "It will disappear", "It costs $1M"], a: 1, explanation: "Copyright laws regarding AI-generated content are currently unsettled and vary by country." }
     ],
     hard: [
-        { 
-            q: "What is 'Algorithmic Bias'?", 
-            options: ["The AI prefers Apple over Android", "Unfair outcomes based on flawed training data", "The electricity cost of AI", "A virus in the code"], 
-            a: 1, 
-            monster: "The Bias Behemoth",
-            explanation: "Bias occurs when an AI produces prejudiced results because the data it was trained on contained human biases."
-        },
-        { 
-            q: "What is a 'Context Window'?", 
-            options: ["The screen size of your laptop", "The limit of text the AI can consider at once", "A pop-up ad", "The time of day the AI works best"], 
-            a: 1, 
-            monster: "The Memory Devourer",
-            explanation: "The context window is the maximum amount of text (tokens) the model can 'read' and remember in a single conversation."
-        },
-        { 
-            q: "If an AI is 'Multimodal', what can it do?", 
-            options: ["Travel through time", "Process different types of inputs (text, image, audio)", "Run on multiple computers", "Speak multiple languages only"], 
-            a: 1, 
-            monster: "The Shapeshifter",
-            explanation: "Multimodal models can understand and generate across different mediums, such as turning text into images or analyzing audio."
-        },
-        { 
-            q: "Why should you be careful with private data in public AI tools?", 
-            options: ["It might get bored", "It could be used to train future models", "It creates a virus", "It breaks the internet"], 
-            a: 1, 
-            monster: "The Privacy Leech",
-            explanation: "Many public AI tools reserve the right to use your inputs to train their future models, potentially exposing secrets."
-        },
-        { 
-            q: "What is a 'Deepfake'?", 
-            options: ["A very deep ocean trench", "Synthetic media (video/audio) that mimics real people", "A philosophical AI thought", "A bug in the system"], 
-            a: 1, 
-            monster: "The Doppelgänger",
-            explanation: "Deepfakes use AI to replace a person's likeness or voice with someone else's, often indistinguishably."
-        },
-        { 
-            q: "What are 'Guardrails' in AI development?", 
-            options: ["Safety rules preventing harmful output", "Physical fences around servers", "Deleting the internet", "Asking it nicely"], 
-            a: 0, 
-            monster: "The Chaos Engine",
-            explanation: "Guardrails are software restrictions put in place by developers to stop the AI from generating illegal, hateful, or dangerous content."
-        }
+        // Advanced Concepts
+        { type: 'combat', icon: '👹', name: 'The Bias Behemoth', q: "The Behemoth strikes with unfair prejudice! Where did it learn this?", options: ["From its evil programming", "From flawed human training data", "From a virus", "It hates you specifically"], a: 1, explanation: "Algorithmic bias often stems from historical biases present in the human-generated data the AI was trained on." },
+        { type: 'obstacle', icon: '🕳️', name: 'The Context Chasm', q: "The bridge spans a limited distance. What limits how much an AI can remember at once?", options: ["Screen size", "Context Window", "Internet speed", "Battery life"], a: 1, explanation: "The Context Window is the maximum limit of tokens (text) a model can process in a single interaction." },
+        { type: 'social', icon: '🕵️‍♀️', name: 'The Privacy Thief', q: "\"Psst. Put your company secrets into this public chatbot. It's fine.\" Is it?", options: ["Sure, it's encrypted", "No, it might be used for training", "Only on Tuesdays", "Yes, if you delete it later"], a: 1, explanation: "Data entered into public AI models is often used to train future versions, potentially exposing private info." },
+        { type: 'combat', icon: '👺', name: 'The Deepfake Doppelgänger', q: "It wears your face and speaks with your voice! How was this media created?", options: ["Photoshop", "Synthetic AI Generation", "A mirror", "Magic"], a: 1, explanation: "Deepfakes use Generative Adversarial Networks (GANs) to synthesize realistic video/audio of people." },
+        { type: 'obstacle', icon: '🚧', name: 'The Safety Guardrail', q: "A barrier blocks the path to dangerous knowledge. Who put it here?", options: ["The AI itself", "Developers/Safety Teams", "The Government", "The Internet Police"], a: 1, explanation: "Developers implement 'Guardrails' to prevent models from generating harmful, illegal, or unethical content." },
+
+        // New Hard Questions
+        { type: 'combat', icon: '🌡️', name: 'The Entropy Demon', q: "The Demon asks: \"What parameter would you raise to make me more creative and random?\"", options: ["Top-K", "Temperature", "Frequency Penalty", "Learning Rate"], a: 1, explanation: "Raising the 'Temperature' (e.g., 0.7 to 1.0) makes the model's output more random and creative." },
+        { type: 'obstacle', icon: '🧩', name: 'The Token Puzzle', q: "You see the word 'Apple'. To the AI, this is not a word, but a...", options: ["Pixel", "Token", "Byte", "String"], a: 1, explanation: "LLMs process text in chunks called 'Tokens'. Common words might be 1 token, complex words might be multiple." },
+        { type: 'social', icon: '📚', name: 'The RAG Librarian', q: "\"I don't know the answer, but I can look it up in your documents.\" What is this technique?", options: ["Fine-tuning", "RAG (Retrieval-Augmented Generation)", "Pre-training", "Overfitting"], a: 1, explanation: "RAG allows an AI to retrieve relevant info from external documents to answer questions accurately." },
+        { type: 'combat', icon: '🔗', name: 'The Chain Master', q: "To solve a math problem, you ask the AI to 'Think step-by-step'. What is this?", options: ["Zero-shot Prompting", "Chain-of-Thought Prompting", "Few-shot Prompting", "Meta Prompting"], a: 1, explanation: "Chain-of-Thought prompting encourages the model to break down complex reasoning into intermediate steps." },
+        { type: 'obstacle', icon: '🧠', name: 'The Neural Net', q: "This network has billions of adjustable values. What are they called?", options: ["Neurons", "Parameters", "Gigabytes", "Variables"], a: 1, explanation: "Parameters are the internal variables (weights and biases) learned by the model during training." },
+        { type: 'social', icon: '🎯', name: 'The Fine-Tuner', q: "\"I was trained generally, but now I specialize in medical law.\" How?", options: ["Fine-Tuning", "Rebooting", "Prompting", "Compressing"], a: 0, explanation: "Fine-tuning involves further training a pre-trained model on a specific dataset to specialize its skills." },
+        { type: 'combat', icon: '🌀', name: 'The Overfitted Ogre', q: "This Ogre memorized the training data so well it can't handle new situations. It is...", options: ["Underfitted", "Overfitted", "Optimized", "Balanced"], a: 1, explanation: "Overfitting happens when a model learns the training data (and its noise) too well, failing to generalize to new data." },
+        { type: 'obstacle', icon: '0️⃣', name: 'The Zero-Shot Gap', q: "You ask for a poem without giving any examples. What prompting style is this?", options: ["Zero-shot", "One-shot", "Few-shot", "Many-shot"], a: 0, explanation: "Zero-shot prompting means asking the model to perform a task without providing any examples." },
+        { type: 'social', icon: '🌌', name: 'The Latent Walker', q: "\"I navigate the high-dimensional space where concepts are stored.\" What is this space?", options: ["The Cloud", "Latent Space", "The Metaverse", "The Database"], a: 1, explanation: "Latent Space is a mathematical representation where similar concepts (like 'King' and 'Queen') are stored close together." },
+        { type: 'combat', icon: '🤖', name: 'The AGI Construct', q: "This theoretical AI could perform any intellectual task a human can. What is it?", options: ["Narrow AI", "AGI (Artificial General Intelligence)", "GenAI", "Expert System"], a: 1, explanation: "AGI refers to a hypothetical AI that possesses human-like general intelligence and adaptability." }
     ]
 };
 
@@ -578,7 +667,9 @@ const PATH_DESCRIPTIONS = [
     { l: "Cross the Bridge of Creativity", r: "Wade through the Swamp of Misinformation" },
     { l: "Descend into the Cavern of Data", r: "Scale the Cliffs of Logic" },
     { l: "Take the Path of the Artist", r: "Follow the Road of the Analyst" },
-    { l: "Enter the Valley of Hallucinations", r: "Walk the Plains of Grounded Truth" }
+    { l: "Enter the Valley of Hallucinations", r: "Walk the Plains of Grounded Truth" },
+    { l: "Navigate the River of Parameters", r: "Cross the Desert of Zero-Shot" },
+    { l: "Climb the Tower of Tokens", r: "Delve into the Dungeon of Deepfakes" }
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -590,10 +681,11 @@ let state = {
     currentHp: 0,
     maxHp: 0,
     step: 0,
-    maxSteps: 7,
+    maxSteps: 6, // Reduced slightly to fit story beats better
     pathText: "",
-    currentEnemy: null,
-    abilityUsed: false
+    currentEncounter: null,
+    abilityUsed: false,
+    storyStage: 0 // 0: Start, 1: Mid, 2: End
 };
 
 /* -------------------------------------------------------------------------- */
@@ -606,6 +698,7 @@ const hpTrack = document.getElementById('hp-track');
 const stepCount = document.getElementById('step-count');
 const charNameDisplay = document.getElementById('char-name-display');
 const abilityBtn = document.getElementById('ability-btn');
+const tutorialModal = document.getElementById('tutorial-modal');
 const feedbackOverlay = document.getElementById('feedback-overlay');
 const feedbackTitle = document.getElementById('feedback-title');
 const feedbackMsg = document.getElementById('feedback-msg');
@@ -615,14 +708,43 @@ const feedbackIcon = document.getElementById('feedback-icon');
 
 // --- Init ---
 function initGame() {
+    // Reset State
+    state = {
+        hero: null,
+        currentHp: 0,
+        maxHp: 0,
+        step: 0,
+        maxSteps: 6,
+        pathText: "",
+        currentEncounter: null,
+        abilityUsed: false,
+        storyStage: 0 
+    };
+    
+    hud.style.visibility = 'hidden';
+    
+    mainStage.innerHTML = `
+        <div class="fade-in">
+            <h1 style="font-size:3rem; margin-bottom:10px; color:var(--accent-gold); text-transform:uppercase; letter-spacing:4px;">Quest for the Citadel</h1>
+            <div class="sub-text" style="margin:0 auto 40px auto;">A Journey through the World of Artificial Intelligence</div>
+            
+            <div style="display:flex; gap:20px; justify-content:center;">
+                <button class="btn" onclick="renderHeroSelection()">Start Game</button>
+                <button class="btn btn-secondary" onclick="openTutorial()">How to Play</button>
+            </div>
+        </div>
+    `;
+}
+
+// --- Tutorial ---
+function openTutorial() { tutorialModal.style.display = 'flex'; }
+function closeTutorial() { 
+    tutorialModal.style.display = 'none'; 
     renderHeroSelection();
 }
 
 // --- Render: Hero Selection ---
 function renderHeroSelection() {
-    hud.style.visibility = 'hidden';
-    state.abilityUsed = false;
-    
     let cardsHtml = HEROES.map(h => `
         <div class="char-card fade-in" onclick="selectHero('${h.id}')">
             <span class="char-icon">${h.icon}</span>
@@ -642,6 +764,7 @@ function renderHeroSelection() {
         <div class="card-container">
             ${cardsHtml}
         </div>
+        <button class="btn btn-secondary" style="margin-top:30px;" onclick="initGame()">Back</button>
     `;
 }
 
@@ -650,10 +773,6 @@ function selectHero(id) {
     state.hero = hero;
     state.currentHp = hero.hp;
     state.maxHp = hero.hp;
-    state.step = 0;
-    
-    // Update HUD
-    charNameDisplay.innerHTML = `${hero.icon} ${hero.name}`;
     
     // Setup Ability Button
     if (hero.ability === 'Ironclad') {
@@ -665,10 +784,13 @@ function selectHero(id) {
         abilityBtn.onclick = useAbility;
     }
 
+    // Update HUD
+    charNameDisplay.innerHTML = `${hero.icon} ${hero.name}`;
     updateHud();
     hud.style.visibility = 'visible';
 
-    renderPathSelection();
+    // Start Story
+    renderStoryScreen('start');
 }
 
 // --- Logic: Abilities ---
@@ -676,38 +798,28 @@ function useAbility() {
     if (state.abilityUsed) return;
 
     if (state.hero.id === 'artist') {
-        // Remix: Triggered during dice roll usually, or we handle it contextually.
-        // For simplicity, let's say the button is only active when it makes sense?
-        // Actually, let's simplify: "Artist" triggers Remix ONLY on the Dice Screen.
         alert("Wait for a Dice Roll to use Remix!");
         return; 
     }
 
     if (state.hero.id === 'seeker') {
-        // Clarify: Triggered during Combat.
         const options = document.querySelectorAll('.option-btn');
         if (options.length === 0) {
-            alert("Wait for a Question to use Clarify!");
+            alert("Wait for an Encounter to use Clarify!");
             return;
         }
         
-        // Logic to remove 2 wrong answers
-        let removed = 0;
-        const correctIndex = state.currentEnemy.a;
-        
-        // Identify wrong indices
+        const correctIndex = state.currentEncounter.a;
         let wrongIndices = [];
-        state.currentEnemy.options.forEach((_, i) => {
+        state.currentEncounter.options.forEach((_, i) => {
             if (i !== correctIndex) wrongIndices.push(i);
         });
 
-        // Shuffle to pick random 2 to remove
         wrongIndices.sort(() => Math.random() - 0.5);
         
-        // Disable first 2
         wrongIndices.slice(0, 2).forEach(idx => {
             options[idx].classList.add('disabled');
-            options[idx].innerText = "--- CLARIFIED ---";
+            options[idx].innerText = "--- CLARIFIED (Removed) ---";
             options[idx].onclick = null;
         });
 
@@ -717,21 +829,50 @@ function useAbility() {
     }
 }
 
+// --- Render: Story Screen ---
+function renderStoryScreen(stage) {
+    const storyText = STORY_MODULE[state.hero.id][stage];
+    const title = stage === 'start' ? 'The Journey Begins' : stage === 'mid' ? 'The Deepening Noise' : 'The Final Steps';
+    
+    mainStage.innerHTML = `
+        <div class="fade-in" style="max-width:600px; text-align:center;">
+            <div style="font-size:3rem; margin-bottom:20px;">📜</div>
+            <h2 style="font-family:var(--font-head); color:var(--accent-gold); margin-bottom:20px;">${title}</h2>
+            <div class="story-block">
+                <p style="font-size:1.1rem; line-height:1.8; color:#fff;">${storyText}</p>
+            </div>
+            <button class="btn" onclick="advanceFromStory('${stage}')">Continue Journey</button>
+        </div>
+    `;
+}
+
+function advanceFromStory(stage) {
+    if (stage === 'end') {
+        victory();
+    } else {
+        renderPathSelection();
+    }
+}
+
 // --- Render: Path Selection ---
 function renderPathSelection() {
-    if (state.step >= state.maxSteps) {
-        victory();
+    // Check for Mid-Game Story
+    if (state.step === 3 && state.storyStage === 0) {
+        state.storyStage = 1;
+        renderStoryScreen('mid');
+        return;
+    }
+    // Check for End-Game Story
+    if (state.step === state.maxSteps) {
+        renderStoryScreen('end');
         return;
     }
 
     const flavor = PATH_DESCRIPTIONS[Math.floor(Math.random() * PATH_DESCRIPTIONS.length)];
     
-    // Reset ability button state for Artist (can't use here) or Seeker (can't use here)
-    // Just visual update if needed
-    
     mainStage.innerHTML = `
         <div class="story-text fade-in">Step ${state.step + 1}: The Path Forks</div>
-        <div class="sub-text fade-in">Your journey continues. Which direction feels right to you?</div>
+        <div class="sub-text fade-in">Which direction feels right to you?</div>
         <div class="fade-in" style="display:flex; flex-direction:column; gap:15px; margin-top:20px;">
             <button class="btn" onclick="choosePath('${flavor.l}')">⬅ ${flavor.l}</button>
             <button class="btn" onclick="choosePath('${flavor.r}')">${flavor.r} ➡</button>
@@ -746,25 +887,16 @@ function choosePath(text) {
 
 // --- Render: Dice Roll ---
 function renderDiceRoll() {
-    // Enable Remix button if Artist and not used
+    // Enable Remix button if Artist
     if (state.hero.id === 'artist' && !state.abilityUsed) {
         abilityBtn.disabled = false;
         abilityBtn.onclick = () => {
             state.abilityUsed = true;
             abilityBtn.disabled = true;
             abilityBtn.innerText = "Remixed!";
-            // Reroll animation trigger
-            const die = document.getElementById('die-face');
-            die.classList.add('rolling');
-            setTimeout(() => {
-                die.classList.remove('rolling');
-                const roll = Math.floor(Math.random() * 20) + 1; 
-                die.innerText = roll;
-                handleRollResult(roll);
-            }, 500);
+            triggerRoll();
         };
     } else if (state.hero.id !== 'seeker') {
-        // Disable for others or if used
          if(state.hero.id === 'artist') abilityBtn.disabled = true;
     }
 
@@ -779,64 +911,63 @@ function renderDiceRoll() {
         </div>
         <div id="roll-result" class="fade-in" style="height: 30px; margin-top:20px; font-weight:bold; font-size:1.2rem; color:var(--accent-gold)"></div>
     `;
-
-    const die = document.getElementById('die-face');
     
+    triggerRoll();
+}
+
+function triggerRoll() {
+    const die = document.getElementById('die-face');
     die.classList.add('rolling');
     
-    // Simulate Roll
     setTimeout(() => {
         die.classList.remove('rolling');
         const roll = Math.floor(Math.random() * 20) + 1;
         die.innerText = roll;
-        handleRollResult(roll);
+        
+        const resultText = document.getElementById('roll-result');
+        let type = '';
+        if (roll > 10) {
+            type = 'easy';
+            resultText.innerHTML = `Rolled ${roll}! A clear path.`;
+            resultText.style.color = 'var(--success)';
+        } else {
+            type = 'hard';
+            resultText.innerHTML = `Rolled ${roll}. Danger approaches!`;
+            resultText.style.color = 'var(--danger)';
+        }
+
+        setTimeout(() => {
+            renderEncounter(type);
+        }, 2000);
     }, 1500);
 }
 
-function handleRollResult(roll) {
-    const resultText = document.getElementById('roll-result');
-    // Disable Remix button now that roll is done (unless we want to allow post-roll? Let's say pre-roll or mid-roll for simplicity in code structure, but actually standard UI pattern is see result -> click reroll.
-    // Implementation detail: The current flow moves fast. Let's stick to the flow.
-    
-    let type = '';
-    if (roll > 10) {
-        type = 'easy';
-        resultText.innerHTML = `Rolled ${roll}! The path is clear.`;
-        resultText.style.color = 'var(--success)';
-    } else {
-        type = 'hard';
-        resultText.innerHTML = `Rolled ${roll}. A CHALLENGE blocks the way!`;
-        resultText.style.color = 'var(--danger)';
-    }
-
-    // Short delay before combat
-    setTimeout(() => {
-        startCombat(type);
-    }, 2000);
-}
-
-// --- Render: Combat (Quiz) ---
-function startCombat(difficulty) {
+// --- Render: Encounter ---
+function renderEncounter(difficulty) {
     // Enable Clarify for Seeker
     if (state.hero.id === 'seeker' && !state.abilityUsed) {
         abilityBtn.disabled = false;
         abilityBtn.onclick = useAbility;
     } else if (state.hero.id === 'artist') {
-        abilityBtn.disabled = true; // Can't remix in combat
+        abilityBtn.disabled = true;
     }
 
-    const pool = QUESTIONS[difficulty];
+    const pool = ENCOUNTERS[difficulty];
     const q = pool[Math.floor(Math.random() * pool.length)];
-    state.currentEnemy = q;
+    state.currentEncounter = q;
 
     const badgeClass = difficulty === 'easy' ? 'badge-easy' : 'badge-hard';
-    const containerClass = difficulty === 'hard' ? 'boss-mode' : '';
+    let containerClass = '';
+    if (q.type === 'social') containerClass = 'social-mode';
+    if (q.type === 'obstacle') containerClass = 'obstacle-mode';
+
+    const typeLabel = q.type === 'combat' ? 'Monster' : q.type === 'social' ? 'Friendly' : 'Obstacle';
 
     mainStage.innerHTML = `
         <div class="monster-display ${containerClass} fade-in">
             <div class="monster-header">
-                <div class="monster-name">${q.monster}</div>
-                <span class="difficulty-badge ${badgeClass}">${difficulty} Question</span>
+                <div class="monster-name">${q.icon} ${q.name}</div>
+                <span class="difficulty-badge ${badgeClass}">${typeLabel}</span>
             </div>
             <div class="question-box">
                 <div class="question-text">${q.q}</div>
@@ -853,15 +984,20 @@ function startCombat(difficulty) {
 }
 
 function handleAnswer(index) {
-    const q = state.currentEnemy;
+    const q = state.currentEncounter;
     const isCorrect = index === q.a;
 
     if (isCorrect) {
-        showFeedback(true, `Correct! The ${q.monster} fades away.`, q.explanation);
+        let successMsg = "You answered correctly!";
+        if (q.type === 'combat') successMsg = `The ${q.name} is defeated!`;
+        if (q.type === 'social') successMsg = `The ${q.name} thanks you for the help.`;
+        if (q.type === 'obstacle') successMsg = `You successfully navigate the ${q.name}.`;
+        
+        showFeedback(true, successMsg, q.explanation);
     } else {
         state.currentHp--;
         updateHud();
-        const damageText = state.currentHp <= 0 ? "You have lost your way." : "You take 1 Damage.";
+        const damageText = state.currentHp <= 0 ? "Your journey ends here." : "You take 1 Damage.";
         const correctText = q.options[q.a];
         showFeedback(false, `Incorrect. ${damageText} <br><br>The correct answer was: <b>${correctText}</b>`, q.explanation);
     }
@@ -869,7 +1005,6 @@ function handleAnswer(index) {
 
 // --- HUD & Feedback ---
 function updateHud() {
-    // Render Pips
     let pipsHtml = '';
     for(let i=0; i<state.maxHp; i++) {
         const isActive = i < state.currentHp ? 'active' : '';
@@ -881,7 +1016,7 @@ function updateHud() {
 
 function showFeedback(success, text, explanation) {
     feedbackOverlay.style.display = 'flex';
-    feedbackTitle.innerText = success ? "Success!" : "Damage Taken!";
+    feedbackTitle.innerText = success ? "Success!" : "Failure";
     feedbackTitle.className = success ? "feedback-title win-text" : "feedback-title lose-text";
     feedbackIcon.innerText = success ? "✨" : "💥";
     feedbackMsg.innerHTML = text;
@@ -891,12 +1026,7 @@ function showFeedback(success, text, explanation) {
         feedbackOverlay.style.display = 'none';
         if (state.currentHp <= 0) {
             gameOver();
-        } else if (success) {
-            state.step++;
-            updateHud();
-            renderPathSelection();
         } else {
-            // On fail but alive, advance anyway (fail forward mechanic)
             state.step++;
             updateHud();
             renderPathSelection();
@@ -906,18 +1036,26 @@ function showFeedback(success, text, explanation) {
 
 // --- End States ---
 function victory() {
+    const hero = state.hero;
+    // Generate dynamic image URL based on hero prompt
+    const imgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(hero.victoryPrompt)}?width=400&height=600&nologo=true`;
+
     mainStage.innerHTML = `
-        <div style="font-size:5rem; margin-bottom:20px;" class="fade-in">🏰</div>
-        <div class="story-text fade-in" style="color:var(--accent-gold)">The Citadel of Truth</div>
-        <div class="sub-text fade-in">
-            You have navigated the noise and reached the summit of understanding.
-            <br><br>
-            <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:8px;">
-                <div style="font-size:1.2rem; margin-bottom:10px;">${state.hero.name}</div>
-                <div>Health Remaining: ${state.currentHp} / ${state.maxHp}</div>
+        <div class="fade-in">
+            <div class="story-text" style="color:var(--accent-gold); font-size:2rem;">The Citadel of Truth</div>
+            
+            <img src="${imgUrl}" alt="${hero.name} Victory Poster" class="victory-poster fade-in">
+
+            <div class="sub-text fade-in">
+                "Welcome," a voice echoes. "You have proven that understanding is the ultimate weapon against chaos."
+                <br><br>
+                <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:8px;">
+                    <div style="font-size:1.2rem; margin-bottom:10px; color:var(--accent-cyan);">${hero.name}</div>
+                    <div>Health Remaining: ${state.currentHp} / ${state.maxHp}</div>
+                </div>
             </div>
         </div>
-        <button class="btn fade-in" onclick="initGame()">Start New Quest</button>
+        <button class="btn fade-in" onclick="initGame()">Play Again</button>
     `;
 }
 
@@ -925,7 +1063,7 @@ function gameOver() {
     mainStage.innerHTML = `
         <div style="font-size:5rem; margin-bottom:20px;" class="fade-in">☠️</div>
         <div class="story-text fade-in" style="color:var(--danger)">Lost in the Noise</div>
-        <div class="sub-text fade-in">Your journey ends here. The hallucinations were too strong.</div>
+        <div class="sub-text fade-in">The hallucinations became too strong. You lose your way in the data stream.</div>
         <button class="btn fade-in" onclick="initGame()">Try Again</button>
     `;
 }
