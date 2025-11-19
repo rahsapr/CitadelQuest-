@@ -576,7 +576,8 @@ const HEROES = [
         ability: 'Clarify',
         abilityDesc: 'Remove 2 wrong options (Once/Game).',
         hp: 3,
-        victoryPrompt: 'cinematic 80s retro 3d movie poster cyberpunk wizard hero glowing runes hooded figure synthwave digital art'
+        // UPDATE: Point to your local file here
+        img: 'assets/seeker.jpg' 
     },
     {
         id: 'guardian',
@@ -586,7 +587,8 @@ const HEROES = [
         ability: 'Ironclad',
         abilityDesc: 'Passive: Start with +2 Max Health.',
         hp: 5,
-        victoryPrompt: 'cinematic 80s retro 3d movie poster cyberpunk paladin knight glowing shield neon armor synthwave digital art'
+        // UPDATE: Point to your local file here
+        img: 'assets/guardian.jpg'
     },
     {
         id: 'artist',
@@ -596,7 +598,8 @@ const HEROES = [
         ability: 'Remix',
         abilityDesc: 'Reroll a bad dice outcome (Once/Game).',
         hp: 3,
-        victoryPrompt: 'cinematic 80s retro 3d movie poster cyberpunk rogue artist holding glowing brush colorful glitch effects synthwave digital art'
+        // UPDATE: Point to your local file here
+        img: 'assets/artist.jpg'
     }
 ];
 
@@ -1037,14 +1040,21 @@ function showFeedback(success, text, explanation) {
 // --- End States ---
 function victory() {
     const hero = state.hero;
-    // Generate dynamic image URL based on hero prompt
-    const imgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(hero.victoryPrompt)}?width=400&height=600&nologo=true`;
+    // UPDATE: Use the static image property
+    const imgUrl = hero.img;
 
     mainStage.innerHTML = `
         <div class="fade-in">
             <div class="story-text" style="color:var(--accent-gold); font-size:2rem;">The Citadel of Truth</div>
             
-            <img src="${imgUrl}" alt="${hero.name} Victory Poster" class="victory-poster fade-in">
+            <!-- Added onerror fallback in case image is missing -->
+            <img src="${imgUrl}" 
+                 alt="${hero.name} Victory Poster" 
+                 class="victory-poster fade-in"
+                 onerror="this.onerror=null; this.style.display='none'; document.getElementById('alt-victory-text').style.display='block';">
+            
+            <!-- Fallback if image doesn't load -->
+            <div id="alt-victory-text" style="display:none; font-size:5rem; margin-bottom:20px;">🏆</div>
 
             <div class="sub-text fade-in">
                 "Welcome," a voice echoes. "You have proven that understanding is the ultimate weapon against chaos."
